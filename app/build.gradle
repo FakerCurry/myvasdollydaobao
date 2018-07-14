@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+apply plugin: 'channel'
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.sjw.myvasdollydaobao"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    //打包配置打包签名
+    signingConfigs {
+        release {
+            try {
+                storeFile file("./keystore/zbpt.jks")
+                storePassword "z123456"
+                keyAlias "zbpt"
+                keyPassword "z123456"
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
+
+//        debug {
+////            storeFile file("./keystore/debug.keystore")
+//            storeFile file("./keystore/zbpt.jks")
+//        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    channel {
+        //指定渠道文件，一定要找准你项目路径下的文件
+        channelFile = file("./channel/channel.txt")
+        //多渠道包的输出目录，默认为new File(project.buildDir,"channel")
+        baseOutputDir = new File(project.buildDir, "channel")
+        //多渠道包的命名规则，默认为：${appName}-${versionName}-${versionCode}-${flavorName}-${buildType}
+        //命名规则可以不写,直接生成
+        //快速模式：生成渠道包时不进行校验（速度可以提升10倍以上）
+        isFastMode = false
+    }
+//第二种方式
+//    rebuildChannel{
+//        baseDebugApk = new File
+//                (project.projectDir, "outputs/apk/debug/app-base-debug.apk")//一定要写准基准包所在位置
+//        baseReleaseApk = new File
+//                (project.projectDir, "rebuildChannel/debug")
+//    }
+
+
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.leon.channel:helper:1.1.7'
+
+
+}
